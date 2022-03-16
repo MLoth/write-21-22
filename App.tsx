@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
 import AppLoading from 'expo-app-loading'
 import {
@@ -6,6 +6,13 @@ import {
   PlayfairDisplay_400Regular,
   PlayfairDisplay_700Bold,
 } from '@expo-google-fonts/playfair-display'
+import { NavigationContainer } from '@react-navigation/native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import AppNavigation from './screens/AppNavigation'
+
+import { setBackgroundColorAsync } from 'expo-navigation-bar'
+import { osName } from 'expo-device'
+import color from './styles/color'
 
 export default function App() {
   const [fontsLoaded, error] = useFonts({
@@ -13,23 +20,23 @@ export default function App() {
     PlayfairDisplay_700Bold,
   })
 
+  useEffect(() => {
+    // Android bottom color
+    if (osName === 'Android') setBackgroundColorAsync(color.dark)
+  }, [])
+
   // FONT INLADEN: fonts zijn overal nodig, pas nadat fonts geladen zijn, kan de app verder runnen!
   if (!fontsLoaded) {
     return <AppLoading />
   } else {
     return (
-      <View>
-        <StatusBar style="auto" />
+      <NavigationContainer>
+        <SafeAreaProvider>
+          <StatusBar style="inverted" />
 
-        <Text
-          style={{
-            fontFamily: 'PlayfairDisplay_700Bold',
-            marginTop: 64,
-          }}
-        >
-          Open up App.tsx to start working on your app!
-        </Text>
-      </View>
+          <AppNavigation />
+        </SafeAreaProvider>
+      </NavigationContainer>
     )
   }
 }
